@@ -11,8 +11,9 @@ const STORED_DATA_KEY = 'feedback-form-state';
 const userFeedbackData = {};
 const savedFeedback = localStorage.getItem(STORED_DATA_KEY);
 
-function onFormInput(event) {
-  userFeedbackData[event.target.name] = event.target.value.trim();
+function onFormInput() {
+  userFeedbackData.email = formEmailRef.value.trim();
+  userFeedbackData.message = formMessageRef.value.trim();
   localStorage.setItem(STORED_DATA_KEY, JSON.stringify(userFeedbackData));
 }
 
@@ -22,13 +23,8 @@ function retrieveUserFeedbackDataOnPageLoad() {
   if (savedFeedback) {
     const parsedEmail = JSON.parse(savedFeedback).email;
     const parsedMessage = JSON.parse(savedFeedback).message;
-
-    parsedEmail !== undefined || null
-      ? (formEmailRef.value = parsedEmail)
-      : (formEmailRef.value = '');
-    parsedMessage !== undefined || null
-      ? (formMessageRef.value = parsedMessage)
-      : (formMessageRef.value = '');
+    formEmailRef.value = parsedEmail;
+    formMessageRef.value = parsedMessage;
   }
 }
 
@@ -40,8 +36,10 @@ function onFormSubmit(event) {
       email: formEmailRef.value.trim(),
       message: formMessageRef.value.trim(),
     });
-  }
 
-  feedbackFormRef.reset();
-  localStorage.removeItem(STORED_DATA_KEY);
+    feedbackFormRef.reset();
+    localStorage.removeItem(STORED_DATA_KEY);
+  } else {
+    alert('Error! Email and message field must be filled!');
+  }
 }
